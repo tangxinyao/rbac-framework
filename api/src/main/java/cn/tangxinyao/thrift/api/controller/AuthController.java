@@ -39,7 +39,7 @@ public class AuthController {
 
             String token;
             if (authResponse.isSetId()) {
-                token = JwtUtil.getToken(authResponse.getId(), authResponse.getUsername(), request.getPassword());
+                token = JwtUtil.getToken(authResponse.getId(), authResponse.getUsername());
             } else {
                 return Response.usernameOrPasswordError();
             }
@@ -63,7 +63,7 @@ public class AuthController {
 
             String token;
             if (tAuthResponse.isSetId()) {
-                token = JwtUtil.getToken(tAuthResponse.getId(), tAuthResponse.getUsername(), request.getPassword());
+                token = JwtUtil.getToken(tAuthResponse.getId(), tAuthResponse.getUsername());
             } else {
                 return Response.error();
             }

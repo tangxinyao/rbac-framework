@@ -1,5 +1,6 @@
 package cn.tangxinyao.thrift.business.controller;
 
+import cn.tangxinyao.thrift.business.annotation.ThriftController;
 import cn.tangxinyao.thrift.business.domain.authority.Module;
 import cn.tangxinyao.thrift.business.domain.authority.Role;
 import cn.tangxinyao.thrift.business.domain.authority.User;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component("accountController")
+@ThriftController(service = "account", processor = TAccountService.Processor.class)
 public class AccountController implements TAccountService.Iface {
 
     @Autowired

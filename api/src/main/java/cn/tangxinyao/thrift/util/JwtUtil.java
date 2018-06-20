@@ -10,15 +10,13 @@ import java.util.Map;
 
 public class JwtUtil {
     private static final String CLAIM_KEY_USERNAME = "username";
-    private static final String CLAIM_KEY_PASSWORD = "password";
     private static final String CLAIM_SECRET = "secret";
     private static final long EXPIRATION = 7200000;
 
-    public static String getToken(Integer id, String username, String password) {
+    public static String getToken(Integer id, String username) {
         Map<String, Object> claims = new HashMap<>();
 
         claims.put(CLAIM_KEY_USERNAME, username);
-        claims.put(CLAIM_KEY_PASSWORD, password);
 
         return Jwts.builder()
                 .setId(String.valueOf(id))
@@ -46,16 +44,6 @@ public class JwtUtil {
             username = null;
         }
         return username;
-    }
-
-    public static String getPassword(String token) {
-        String password;
-        try {
-            password = (String) getClaims(token).get(CLAIM_KEY_PASSWORD);
-        } catch (Exception e) {
-            password = null;
-        }
-        return password;
     }
 
     public static boolean isNotExpired(String token) {
@@ -90,14 +78,4 @@ public class JwtUtil {
     private static Date computeExpired() {
         return new Date(System.currentTimeMillis() + EXPIRATION);
     }
-
-//    public static JwtUser getJwtUser(){
-//        Object object = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        JwtUser user;
-//        if("anonymousUser".equals(object)){
-//            return null;
-//        } else {
-//            return (JwtUser)object;
-//        }
-//    }
 }
