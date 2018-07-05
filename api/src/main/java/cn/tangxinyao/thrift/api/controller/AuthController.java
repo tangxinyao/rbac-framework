@@ -69,9 +69,9 @@ public class AuthController {
         PrivateKey privateKey = RSAEncryptUtil.getPrivateKey(Base64.decodeBase64(privateKeyValue));
         String aesKey = StringUtils.newString(RSAEncryptUtil.decryptData(Base64.decodeBase64(aesKeyRequest.getAesKey()), privateKey), "utf-8");
         String uuid = AES_PREFIX + UUID.randomUUID().toString();
-        System.out.println(aesKey);
 
         redisTemplate.opsForValue().set(uuid, aesKey);
+        redisTemplate.expire(uuid, 2, TimeUnit.HOURS);
         return Response.success(uuid);
     }
 

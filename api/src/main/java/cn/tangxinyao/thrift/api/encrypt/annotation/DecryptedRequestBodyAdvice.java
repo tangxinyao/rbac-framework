@@ -2,6 +2,7 @@ package cn.tangxinyao.thrift.api.encrypt.annotation;
 
 import cn.tangxinyao.thrift.api.encrypt.config.EncryptProperties;
 import cn.tangxinyao.thrift.api.encrypt.util.AESEncryptUtil;
+import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice;
 
@@ -37,7 +39,7 @@ public class DecryptedRequestBodyAdvice implements RequestBodyAdvice {
             try {
                 return new DecryptHttpInputMessage(inputMessage, properties.getCharset());
             } catch (Exception e) {
-                log.error("decrypt with error", e);
+                throw new RuntimeException(e);
             }
         }
         return inputMessage;
@@ -59,13 +61,17 @@ public class DecryptedRequestBodyAdvice implements RequestBodyAdvice {
         private InputStream body;
 
         public DecryptHttpInputMessage(HttpInputMessage inputMessage, String charset) throws Exception {
-            this.headers = inputMessage.getHeaders();
+            long startedAt = System.currentTimeMillis();
 
-            String token = headers.getFirst("X-Access-Token");
+            this.headers = inputMessage.getHeaders();
+            String token = this.headers.getFirst("X-Access-Token");
             String key = (String) redisTemplate.opsForValue().get(token);
 
+            if (StringUtils.isEmpty(key)) {
+                throw new NullPointerException("AES Key not existed in redis");
+            }
+
             String content = IOUtils.toString(inputMessage.getBody(), charset);
-            long startedAt = System.currentTimeMillis();
             String decryptedBody;
             if (content.startsWith("{")) {
                 decryptedBody = content;
@@ -73,7 +79,7 @@ public class DecryptedRequestBodyAdvice implements RequestBodyAdvice {
                 decryptedBody = AESEncryptUtil.aesDecrypt(content, key);
             }
             long endedAt = System.currentTimeMillis();
-            log.debug("Decrypted within: " + (endedAt - startedAt));
+            log.info("Decrypted within: " + (endedAt - startedAt));
             this.body = IOUtils.toInputStream(decryptedBody, charset);
         }
 

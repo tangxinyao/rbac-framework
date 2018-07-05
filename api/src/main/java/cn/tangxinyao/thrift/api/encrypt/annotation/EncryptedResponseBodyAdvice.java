@@ -42,7 +42,7 @@ public class EncryptedResponseBodyAdvice implements ResponseBodyAdvice {
         // EncryptedResponseBodyAdvice.setEncryptedStatus(true);
 
         Boolean status = encryptedStatus.get();
-        if (status != null && status == false) {
+        if (status != null && !status) {
             encryptedStatus.remove();
             return body;
         }
@@ -53,14 +53,13 @@ public class EncryptedResponseBodyAdvice implements ResponseBodyAdvice {
             String token = serverHttpRequest.getHeaders().getFirst("X-Access-Token");
             String key = (String) redisTemplate.opsForValue().get(token);
 
+            if (StringUtils.isEmpty(key)) {
+                throw new NullPointerException("AES Key not existed in redis");
+            }
+
             try {
                 String content = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(body);
-                if (!StringUtils.hasText(key)) {
-                    throw new NullPointerException("X-Access-Token not set");
-                }
                 String result = AESEncryptUtil.aesEncrypt(content, key);
-                System.out.println(result);
-
                 long endedAt = System.currentTimeMillis();
                 log.info("encrypted within: " + (endedAt - startedAt));
                 return result;
