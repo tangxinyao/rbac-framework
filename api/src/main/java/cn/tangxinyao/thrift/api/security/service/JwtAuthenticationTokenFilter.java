@@ -1,6 +1,6 @@
 package cn.tangxinyao.thrift.api.security.service;
 import cn.tangxinyao.thrift.api.security.domain.JwtUser;
-import cn.tangxinyao.thrift.util.JwtUtil;
+import cn.tangxinyao.thrift.api.security.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

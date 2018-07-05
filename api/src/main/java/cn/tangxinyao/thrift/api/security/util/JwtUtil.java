@@ -1,4 +1,4 @@
-package cn.tangxinyao.thrift.util;
+package cn.tangxinyao.thrift.api.security.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

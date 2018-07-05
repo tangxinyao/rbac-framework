@@ -37,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.headers().cacheControl();
         httpSecurity.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
         httpSecurity.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
-        httpSecurity.authorizeRequests().antMatchers("/auth/**").permitAll();
+        httpSecurity.authorizeRequests().antMatchers("/api/auth/**").permitAll();
     }
 
 }

@@ -29,7 +29,7 @@
             parameterType="java.lang.Integer"
             resultType="cn.tangxinyao.thrift.business.domain.authority.User"
     >
-        select * from user where id = #{id}
+        select * from user where id = #{id} limit 0,1
     </select>
 
     <select
@@ -37,7 +37,7 @@
             parameterType="java.lang.String"
             resultType="cn.tangxinyao.thrift.business.domain.authority.User"
     >
-        select * from user where username = #{username}
+        select * from user where username = #{username} limit 0,1
     </select>
 
     <insert
