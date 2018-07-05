@@ -41,6 +41,10 @@ public class Response<T> {
     }
 
     public static Response error() {
-        return new Response(100400);
+        return new Response(500);
+    }
+
+    public static <T> Response error(T data) {
+        return new Response(500, data);
     }
 }
